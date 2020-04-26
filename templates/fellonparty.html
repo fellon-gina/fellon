@@ -1,4 +1,3 @@
-<!-- 지영님. 김신록입니다. -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,67 +31,66 @@
             return regExp.test(p);
         }
 
-        function order() {
-            let name = $('#order_name').val();
-            let sex = $('#order_sex').val();
-            let count = $('#order_count').val();
-            let address = $('#order_address').val();
-            let phone = $('#order_phone').val();
+        function apply() {
+            let name = $('#apply_name').val();
+            let gender = $('#apply_gender').val();
+            let count = $('#apply_count').val();
+            let address = $('#apply_address').val();
+            let phone = $('#apply_phone').val();
 
             if (name == '') {
                 alert('이름을 입력해주세요')
-                $('#order_name').focus()
+                $('#apply_name').focus()
                 return
-            } else if (sex == '') {
+            } else if (gender == '') {
                 alert('성별을 입력해주세요')
-                $('#order_sex').focus()
+                $('#apply_gender').focus()
                 return
             } else if (count == '') {
-                alert('수량을 입력해주세요')
-                $('#order_count').focus()
+                alert('참석자수를 입력해주세요')
+                $('#apply_count').focus()
                 return
             } else if (address == '') {
                 alert('주소를 입력해주세요')
-                $('#order_address').focus()
+                $('#apply_address').focus()
                 return
             } else if (phone == '') {
                 alert('휴대폰번호를 입력해주세요')
-                $('#order_phone').focus()
+                $('#apply_phone').focus()
                 return
             } else if (!isCellPhone(phone)) {
                 alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요');
-                $('#order_phone').focus();
+                $('#apply_phone').focus();
                 return
             }
 
-            make_card();
-        }
-
-        function make_card() {
-            let name = $('#order_name').val();
-            let sex = $('#order_sex').val();
-            let count = $('#order_count').val();
-            let address = $('#order_address').val();
-            let phone = $('#order_phone').val();
-
-            let temp_html = '<tr>\
-            <td>'+ name + '</td>\
-            <td>'+ sex + '</td>\
-            <td>'+ count + '</td>\
-            <td>'+ address + '</td>\
-            <td>'+ phone + '</td>\
-          </tr>';
-            $('#orders-box').append(temp_html);
-
-            clear()
+            $.ajax({
+                type: 'POST',
+                url: '/apply',
+                data: {
+                    name: name,
+                    gender: gender,
+                    count: count,
+                    address: address,
+                    phone: phone
+                },
+                success: function (response) {
+                    let success = response.success
+                    if (success == 'false') {
+                        alert(response.message)
+                    } else {
+                        alert(name + '님. 신청이 완료되었습니다.')
+                    }
+                }
+            })
         }
 
         function clear() {
-            $('#order_name').val('');
-            $('#order_sex').val('');
-            $('#order_count').val('');
-            $('#order_address').val('');
-            $('#order_phone').val('');
+            $('#apply_name').val('');
+            $('#apply_gender').val('');
+            $('#apply_count').val('');
+            $('#apply_address').val('');
+            $('#apply_phone').val('');
         }
     </script>
 
@@ -128,12 +126,8 @@
             display: inline;
         }
 
-        .order {
+        .apply {
             text-align: center;
-        }
-
-        .orders {
-            margin-top: 100px;
         }
     </style>
 </head>
@@ -151,13 +145,13 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">신청자 이름</span>
                 </div>
-                <input type="text" class="form-control" id="order_name" aria-describedby="basic-addon3">
+                <input type="text" class="form-control" id="apply_name" aria-describedby="basic-addon3">
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">성별</span>
                 </div>
-                <select class="custom-select" id="order_gender">
+                <select class="custom-select" id="apply_gender">
                     <option selected value=""> -- 성별을 입력해주세요 -- </option>
                     <option value="female">여성</option>
                     <option value="male">남성</option>
@@ -169,7 +163,7 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="inputGroupSelect01">참석자수</label>
                 </div>
-                <select class="custom-select" id="order_count">
+                <select class="custom-select" id="apply_count">
                     <option selected value=""> -- 참석하시는 인원수를 선택하세요 -- </option>
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -183,16 +177,17 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">주소(동까지만 입력)</span>
                 </div>
-                <input type="text" class="form-control" id="order_address" aria-describedby="basic-addon3">
+                <input type="text" class="form-control" id="apply_address" aria-describedby="basic-addon3">
             </div>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">전화번호</span>
                 </div>
-                <input type="text" class="form-control" id="order_phone" aria-describedby="basic-addon3">
+                <input type="text" class="form-control" id="apply_phone" aria-describedby="basic-addon3"
+                    placeholder="000-0000-0000">
             </div>
-            <div class="order">
-                <button onclick="order()" type="button" class="btn btn-primary">신청하기</button>
+            <div class="apply">
+                <button onclick="apply()" type="button" class="btn btn-primary">신청하기</button>
             </div>
         </div>
     </div>
